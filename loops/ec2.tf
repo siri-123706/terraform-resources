@@ -1,0 +1,38 @@
+
+resource "aws_instance" "promethous" {
+  count = 4 #create 4 resoucres with same name  
+  ami           = var.ami_id
+  instance_type = var.instance_type
+  vpc_security_group_ids = [ aws_security_group.allow_all_sg.id ]
+#   vpc_security_group_ids = locals.sg_id
+  
+  tags = { 
+    Name = var.instances[count.index] #created resources mongodb, redis, mysql, rabbitmq and index start 0 
+  }
+}         
+
+resource "aws_security_group" "allow_all_sg" {
+  name        = "allow_all_sg"
+  description = "Allowing all traffic"
+
+    ingress {
+        from_port        = 0
+        to_port          = 0
+        protocol         = "-1" 
+        cidr_blocks      = ["0.0.0.0/0"]
+        ipv6_cidr_blocks = ["::/0"]
+    }
+    egress {
+        from_port        = 0
+        to_port          = 0
+        protocol         = "-1"
+        cidr_blocks      = ["0.0.0.0/0"]
+        ipv6_cidr_blocks = ["::/0"]
+    }
+
+
+  tags = {
+    Name = "allow_all_sg"
+  }
+}
+ 
